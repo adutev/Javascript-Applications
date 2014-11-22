@@ -1,0 +1,1 @@
+1. Check text before append it to the body -->> append($('<p>').text('some text'));
