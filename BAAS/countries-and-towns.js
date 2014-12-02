@@ -1,55 +1,88 @@
-(function () {
-	$('document').ready(function function_name (argument) {
-		$('#get-countries').click(function () {
-			updateList();
+$(function() {
+	var headers = {
+		'X-Parse-Application-Id': 'hgu05eCqPZInzjRd4W23m6weq7tKTPlbD9NoZYYZ',
+		'X-Parse-Application-Id': 'hgu05eCqPZInzjRd4W23m6weq7tKTPlbD9NoZYYZ'
+	},
+
+	listCountries();
+
+	function listCountries () {
+		$.ajax({
+			url: 'https://parse.com/1/classes/Country',
+			method: 'GET',
+			headers: {'X-Parse-Application-Id':'hgu05eCqPZInzjRd4W23m6weq7tKTPlbD9NoZYYZ',
+						'X-Parse-REST-API-Key':'2nbmLv6PPsBJ3nE01k4S1yhFDgiqyEQ5zL7TTYMv'
+					}
 		})
-
-		$('#add-country').click(function () {
-			var countryToAdd = $('#create-country').val();
-			addCountry(countryToAdd);
-		})
-
-		
-		function updateList () {
-			$.ajax({
-				url: 'https://parse.com/1/classes/Country',
-				method: 'GET',
-				headers: {'X-Parse-Application-Id':'hgu05eCqPZInzjRd4W23m6weq7tKTPlbD9NoZYYZ',
-							'X-Parse-REST-API-Key':'2nbmLv6PPsBJ3nE01k4S1yhFDgiqyEQ5zL7TTYMv'
-						}
-			})
-			.success(function(data) {
-				listCountries(data);
-			})
-			.fail(function() {
-				console.log("error");
-			})			
-		}
-
-		function listCountries (data) {
-			$('.list-item').remove();
-			for (var c in data.results) {
+		.success(function(data) {
+			for(var c in data.results) {
 				var country = data.results[c];
-				$('#countries-list').append('<li class="list-item" id="' + country.objectId + '">' + country.name);
-			};
-		}
+				$('select').append('<option id="' + country.objectId + '" value="' + country.name +'">' + country.name )
+			}			
+		})
+		.fail(function() {
+			console.log("error");
+		})			
+	}
 
-		function addCountry (country) {
-			$.ajax({
-				method: 'POST',
-				headers: {'X-Parse-Application-Id':'hgu05eCqPZInzjRd4W23m6weq7tKTPlbD9NoZYYZ',
-							'X-Parse-REST-API-Key':'2nbmLv6PPsBJ3nE01k4S1yhFDgiqyEQ5zL7TTYMv'
-						},
-				url: 'https://parse.com/1/classes/Country',
-  				data: '{"name":"' + country + '"}',
-  				contentType: "application/json"
-			})
-			.success(function() {
-				updateList();
-			})
-			.fail(function() {
-				console.log("error");
-			})			
-		}
-	})
-})()
+	function getSelectedCountry () {
+		return $('select').children(':selected').attr('id');
+	}
+
+	$('#add-country-button').on('click', function() {
+		var countryName = $('#create-country').val();
+		$.ajax({
+			url: 'https://parse.com/1/classes/Country/',
+			method: 'POST',
+			headers: {'X-Parse-Application-Id':'hgu05eCqPZInzjRd4W23m6weq7tKTPlbD9NoZYYZ',
+						'X-Parse-REST-API-Key':'2nbmLv6PPsBJ3nE01k4S1yhFDgiqyEQ5zL7TTYMv'
+					},
+			data: JSON.stringify({'name': countryName})
+		})
+		.success(function(data) {
+			$('select').children().remove();
+			listCountries();
+		})
+		.fail(function() {
+			console.log("error");
+		})
+			
+	});
+
+	$('#delete-country-button').on('click', function() {
+		var countryId = getSelectedCountry();
+		$.ajax({
+			url: 'https://parse.com/1/classes/Country/' + countryId,
+			method: 'DELETE',
+			headers: {'X-Parse-Application-Id':'hgu05eCqPZInzjRd4W23m6weq7tKTPlbD9NoZYYZ',
+						'X-Parse-REST-API-Key':'2nbmLv6PPsBJ3nE01k4S1yhFDgiqyEQ5zL7TTYMv'
+					}
+		})
+		.success(function(data) {
+			$('select').children().remove();
+			listCountries();
+		})
+		.fail(function() {
+			console.log("error");
+		})
+			
+	});
+
+	$('#edit-country-button').on('click', function() {
+		// $.ajax({
+		// 	url: 'https://parse.com/1/classes/Country/' + countryId,
+		// 	method: 'DELETE',
+		// 	headers: {'X-Parse-Application-Id':'hgu05eCqPZInzjRd4W23m6weq7tKTPlbD9NoZYYZ',
+		// 				'X-Parse-REST-API-Key':'2nbmLv6PPsBJ3nE01k4S1yhFDgiqyEQ5zL7TTYMv'
+		// 			}
+		// })
+		// .success(function(data) {
+		// 	$('select').remove();
+		// 	listCountries();
+		// })
+		// .fail(function() {
+		// 	console.log("error");
+		// })
+			
+	});
+});
