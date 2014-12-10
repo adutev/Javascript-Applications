@@ -23,6 +23,8 @@
 	}
 
 	function showLoginView() {
+		var username = $('#username').val('');
+		var password = $('#password').val('');
 		$('#register-button').hide();
 		$('#login-button').show();
 		$('#loginViewButton').hide();
@@ -30,21 +32,26 @@
 	}
 
 	function showRegisterView() {
+		var username = $('#username').val('');
+		var password = $('#password').val('');
 		$('#login-button').hide();
 		$('#register-button').show();
 		$('#registerViewButton').hide();
 		$('#loginViewButton').show();
 	}
 
-	function registerClicked() {}
+	function registerClicked() {
+		var username = $('#username').val();
+		var password = $('#password').val();
+		app.ajaxRequester.register(username, password,
+			authSuccess, registerError);
+	}
 
 	function loginClicked() {
 		var username = $('#username').val();
 		var password = $('#password').val();
 		app.ajaxRequester.login(username, password,
-			authSuccess, function (argument) {
-				console.log(JSON.parse(argument.responseText).error)
-			});
+			authSuccess, loginError);
 	}
 
 	function authSuccess(data) {
@@ -62,11 +69,15 @@
 		showAjaxError("Login failed", error);
 	}
 
+	function registerError(error) {
+		showAjaxError("Login failed", error);
+	}
+
+
 	function showAjaxError(msg, error) {
-		console.log(error.readyState)
-		var errMsg = error.error;
-		if (errMsg && errMsg.error) {
-			showErrorMessage(msg + ": " + error.readyState);
+		var errMsg = JSON.parse(error.responseText).error;
+		if (errMsg) {
+			showErrorMessage(msg + ": " + errMsg);
 		} else {
 			showErrorMessage(msg + ".");
 		}
