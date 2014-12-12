@@ -13,3 +13,18 @@ body>header a {
 #bookmarksView li a {
     display: block;
 }
+
+.bookmark-box {
+	width: 40%;
+	height: auto;
+	padding: 5px;
+	margin: 5px;
+	border: 1px solid brown;
+	float: left;
+	border-radius: 10px;
+}
+
+.bookmark-title {
+	color: orange;
+	font-size: 24px;
+}

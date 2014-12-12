@@ -3,9 +3,7 @@
 <head>
 	<meta charset="UTF-8">
 	<title>Exam Template</title>
-	<!-- <script type="text/javascript" src="./scripts/libs/jquery-2.1.1.min.js"></script> -->
-	<!-- <script type="text/javascript" src="./scripts/libs/sammy-latest.min.js"></script> -->
-	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+	<script type="text/javascript" src="./scripts/libs/jquery-2.1.1.min.js"></script>
 	<script type="text/javascript" src="./scripts/libs/jquery.noty.packaged.min.js"></script>
 	<script type="text/javascript" src="./scripts/app.js"></script>
 	<script type="text/javascript" src="./scripts/ajax-requester.js"></script>
@@ -13,18 +11,19 @@
 </head>
 <body>
 	<header>
-		<h1>Bookmarks</h1>
-		<h4><span></span></h4>
+		<h1>Bookmarks<span></span><a href="#" id="logout-button">Logout</a></h1>
+
 	</header>
 	<div id="main-content">
 		<div id="login">
-			<input type="text" id="username">
-			<br>
-			<input type="password" id="password">
-			<br>
+			<label for="username">Username: </label><input type="text" id="username"><br>
+			<label for="password">Password: </label><input type="password" id="password"><br>
 			<button id="login-button">Login</button><a id="registerViewButton" href="#"> Register here</a>
 			<button id="register-button">Register</button><a id="loginViewButton" href="#"> Login here</a>
 		</div>
-	</div>						  
+		<div id="bookmarks">
+			
+		</div>
+	</div>
 </body>
 </html>
