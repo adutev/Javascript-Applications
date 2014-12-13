@@ -15,7 +15,7 @@ body>header a {
 }
 
 .bookmark-box {
-	width: 40%;
+	width: 30%;
 	height: auto;
 	padding: 5px;
 	margin: 5px;
@@ -23,6 +23,25 @@ body>header a {
 	float: left;
 	border-radius: 10px;
 }
+
+#create-bookmark {
+	width: 30%;
+	height: auto;
+	padding: 5px;
+	margin: 5px;
+	border: 1px solid brown;
+	float: left;
+	border-radius: 10px;
+	clear: both;
+    
+}
+#create-bookmark h4 {
+	margin: 10px;
+}
+#create-bookmark input {
+        width: 100%;
+        clear: both;
+    }
 
 .bookmark-title {
 	color: orange;

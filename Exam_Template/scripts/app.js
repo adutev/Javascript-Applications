@@ -12,7 +12,7 @@
 		registerClicked.call(this, selector);
 		loginClicked.call(this, selector);
 		logoutClicked.call(this, 'header');
-		deleteBookmarkButtonClicked.call(this, '.bookmark-box');
+		createBookmarkClicked.call(this, '#create-bookmark')
 	}
 
 	var loginViewClicked = function(selector) {
@@ -52,21 +52,35 @@
 		})
 	}
 
-	var deleteBookmarkButtonClicked = function (selector) {
+	function deleteBookmarkButtonClicked() {
 		var _this = this;
-		$(selector).on('click', '.delete-bookmark-btn', function (ev) {
-			var deleteConfirmed = confirm('Do you want to delete this bookmark');
-			if (deleteConfirmed) {
-				var objectId = $(this).parent().data('id');
-				_this._data.bookmarks.delete(objectId)
-					.then(function (data) {
-						$(ev.target).parent().remove();
-					},
-					function (error) {
-						console.log(error);
-					})
-			};
+		var deleteConfirmed = confirm('Do you want to delete this bookmark');
+		if (deleteConfirmed) {
+			var bookmarkId = $(this).parent().data('objectId');
+			var sessionToken = userSession.getCurrentUser().sessionToken;
+			app.ajaxRequester.deleteBookmark(sessionToken, bookmarkId, function() {
+				$(this).parent().remove();
+				showAllBookmarks();
+			}, function () {
+				console.log('Can not delete this bookmark.')
+			});
+
+		};
+	}
+
+	var createBookmarkClicked = function() {
+		$('#create-bookmark').on('click', '#create-bookmark-button', function() {
+			var title = $('#create-bookmark-title').val();
+			var url = $('#create-bookmark-url').val();
+			var userId = userSession.getCurrentUser().objectId;
+			app.ajaxRequester.createBookmark(title, url, userId, bookmarkCreatedSuccess())
 		})
+	}
+
+	function bookmarkCreatedSuccess() {
+		$('#create-bookmark-title').val('');
+		$('#create-bookmark-url').val('');
+		showAllBookmarks();
 	}
 
 	// Show login, register and bookmarks views
@@ -78,6 +92,8 @@
 		$('#registerViewButton').show();
 		$('#register-button').hide();
 		$('#loginViewButton').hide();
+		$('#bookmarks').html('');
+		$('#create-bookmark').hide();
 	}
 
 	function showRegisterView() {
@@ -87,38 +103,42 @@
 		$('#register-button').show();
 		$('#registerViewButton').hide();
 		$('#loginViewButton').show();
+		$('#bookmarks').html('');
+		$('#create-bookmark').hide();
 	}
 
 	function showBookmarksView() {
 		$('#login').hide();
 		$('#logout-button').show();
+		$('#create-bookmark').show();
 	}
 
 	function showAllBookmarks(data) {
-		var sessionToken = data.sessionToken;
-		app.ajaxRequester.getBookmarks(sessionToken, getbookmarksSuccess, showErrorMessage);
+		var sessionToken = userSession.getCurrentUser().sessionToken;
+		app.ajaxRequester.getBookmarks(sessionToken, getBookmarksSuccess, showErrorMessage);
 	}
 
-	function getbookmarksSuccess(data) {
+	function getBookmarksSuccess(data) {
 		var $bookmarksContainer = $('#bookmarks');
 		$bookmarksContainer.html('');
 
 		for (var b in data.results) {
 			var bookmark = data.results[b];
 			var $bookmarkDiv = $('<div class="bookmark-box">');
+			$bookmarkDiv.data('objectId', bookmark.objectId);
 
 			var $title = $('<div class="bookmark-title">');
 			$title.text(bookmark.title);
 			$bookmarkDiv.append($title)
-			
+
 			var $url = $('<a class="bookmark-url" target="_blank">')
 			$url.text(bookmark.url);
 			$url.attr("href", bookmark.url);
 			$bookmarkDiv.append($url);
 
-			var $deleteButton = $('<a href="#">Delete</a>');
-            $deleteButton.click(deleteBookmarkButtonClicked);
-            $bookmarkDiv.append($deleteButton);
+			var $deleteButton = $('<a class="delete-bookmark-button" href="#">Delete</a>');
+			$deleteButton.click(deleteBookmarkButtonClicked);
+			$bookmarkDiv.append($deleteButton);
 			$('#bookmarks').append($bookmarkDiv);
 		};
 	}
